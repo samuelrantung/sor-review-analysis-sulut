@@ -1,0 +1,18 @@
+2026-04-18 10:39:11 - INFO - Loading dataset from: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_preprocessed.csv
+2026-04-18 10:39:11 - INFO - Loaded 1095 rows.
+2026-04-18 10:39:12 - INFO - Lexicon loaded: 3609 positive words, 6609 negative words.
+2026-04-18 10:39:12 - INFO - Service keywords loaded: 50 words from /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/input/service_keywords.txt
+2026-04-18 10:39:12 - INFO - Computing sentiment scores (Variable M)...
+2026-04-18 10:39:12 - INFO - Sentiment distribution — Positive: 188, Negative: 857, Neutral: 50
+2026-04-18 10:39:12 - INFO - Computing ABSA service quality scores (Variable X, window=±5)...
+2026-04-18 10:39:12 - INFO - Service quality (X) distribution — Positive: 83, Negative: 453, Absent: 559
+2026-04-18 10:39:12 - INFO - Output saved to: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_scored.csv
+2026-04-18 11:45:05 - INFO - Loading dataset from: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_preprocessed.csv
+2026-04-18 11:45:05 - INFO - Loaded 1095 rows.
+2026-04-18 11:45:05 - INFO - Lexicon loaded: 3609 positive words, 6609 negative words.
+2026-04-18 11:45:05 - INFO - Service keywords loaded: 50 words from /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/input/service_keywords.txt
+2026-04-18 11:45:05 - INFO - Computing customer satisfaction scores (Variable M)...
+2026-04-18 11:45:05 - INFO - Customer satisfaction (M) distribution — Positive: 188, Negative: 857, Neutral: 50
+2026-04-18 11:45:05 - INFO - Computing ABSA service quality scores (Variable X, window=±5)...
+2026-04-18 11:45:05 - INFO - Service quality (X) distribution — Positive: 83, Negative: 453, Absent: 559
+2026-04-18 11:45:05 - INFO - Output saved to: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_scored.csv

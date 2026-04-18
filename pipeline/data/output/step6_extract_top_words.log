@@ -1,0 +1,5 @@
+2026-04-18 10:07:03 - INFO - Loading dataset from: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_preprocessed.csv
+2026-04-18 10:07:03 - INFO - Loaded 1095 rows.
+2026-04-18 10:07:03 - INFO - Extracting top 200 words from corpus...
+2026-04-18 10:07:03 - INFO - Total unique words in corpus: 2,905
+2026-04-18 10:07:03 - INFO - Top 200 words saved to: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/top_words.csv

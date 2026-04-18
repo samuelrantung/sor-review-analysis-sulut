@@ -1,0 +1,10 @@
+[2026-04-17 13:38:20] Step 2 - Cleaning                  : 1,367 → 1,098 rows retained (80.3%)
+[2026-04-18 10:05:12] Step 3 - Translation               : 1,098 rows translated to Bahasa Indonesia
+[2026-04-18 10:05:45] Step 4 - Dialect Normalization     : 339 substitutions across 124 rows (11.3% of corpus)
+[2026-04-18 10:06:43] Step 5 - Text Preprocessing        : 1,098 → 1,095 rows (1,095 stemmed, 0 skipped, 3 dropped empty)
+[2026-04-18 10:07:03] Step 6 - Extract Top Words         : Top 200 of 2,905 unique words extracted from 1,095 rows
+[2026-04-18 10:39:12] Step 7 - Sentiment Scoring         : 1,095 rows scored | M: 188 pos / 857 neg / 50 neu | X (ABSA): 83 pos / 453 neg / 559 absent
+[2026-04-18 11:08:52] Step 8 - OLS Regression            : 1,095 rows analysed (dropped 0) | Model 1 R²: 0.1987 | Model 2 R²: 0.0587 | H4 Mediation: SUPPORTED
+[2026-04-18 11:45:05] Step 7 - Sentiment Scoring         : 1,095 rows scored | M (customer satisfaction): 188 pos / 857 neg / 50 neu | X (ABSA): 83 pos / 453 neg / 559 absent
+[2026-04-18 11:45:08] Step 8 - OLS Regression            : 1,095 rows analysed (dropped 0) | Model 1 R²: 0.1987 | Model 2 R²: 0.0587 | H4 Mediation: SUPPORTED
+[2026-04-18 11:46:32] Step 8 - OLS Regression            : 1,095 rows analysed (dropped 0) | Model 1 R²: 0.1987 | Model 2 R²: 0.0587 | H4 Mediation: SUPPORTED

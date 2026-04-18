@@ -1,0 +1,4 @@
+2026-04-18 10:05:45 - INFO - Loading dataset from: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_translated.csv
+2026-04-18 10:05:45 - INFO - Loaded 1098 rows.
+2026-04-18 10:05:45 - INFO - Normalization complete. 339 substitutions made across 124 rows (11.3% of corpus).
+2026-04-18 10:05:45 - INFO - Output saved to: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_normalized.csv

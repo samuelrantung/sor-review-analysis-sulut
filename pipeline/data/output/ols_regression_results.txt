@@ -1,0 +1,92 @@
+============================================================
+STAGE 1: CORRELATION MATRIX (X, M, Y)
+============================================================
+Method: Pearson correlation (point-biserial for ordinal vs continuous)
+                                              service_quality_X (Kualitas Layanan)  ...  review_rating_Y (Star Rating)
+service_quality_X (Kualitas Layanan)                                      1.000000  ...                       0.232057
+customer_satisfaction_M (Kepuasan Pelanggan)                              0.445760  ...                       0.166063
+review_rating_Y (Star Rating)                                             0.232057  ...                       1.000000
+
+[3 rows x 3 columns]
+============================================================
+STAGE 2: OLS MODEL 1 — X -> M
+Does service quality predict customer sentiment?
+============================================================
+                               OLS Regression Results                              
+===================================================================================
+Dep. Variable:     customer_satisfaction_M   R-squared:                       0.199
+Model:                                 OLS   Adj. R-squared:                  0.198
+Method:                      Least Squares   F-statistic:                     271.0
+Date:                     Sat, 18 Apr 2026   Prob (F-statistic):           1.43e-54
+Time:                             11:46:32   Log-Likelihood:                -1135.2
+No. Observations:                     1095   AIC:                             2274.
+Df Residuals:                         1093   BIC:                             2284.
+Df Model:                                1                                         
+Covariance Type:                 nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+const                -0.4235      0.024    -17.969      0.000      -0.470      -0.377
+service_quality_X     0.5546      0.034     16.463      0.000       0.489       0.621
+==============================================================================
+Omnibus:                      151.335   Durbin-Watson:                   1.986
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              215.512
+Skew:                           1.067   Prob(JB):                     1.59e-47
+Kurtosis:                       3.409   Cond. No.                         1.91
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+------------------------------------------------------------
+H1 RESULT: Effect of Service Quality (X) on Customer Satisfaction (M)
+  service_quality_X (Kualitas Layanan) coefficient: 0.5546
+  Significant (p < 0.001) ***
+  Model R²: 0.1987 | F-stat p: 0.0000
+  H1 Conclusion: SUPPORTED — X significantly predicts M.
+------------------------------------------------------------
+============================================================
+STAGE 3: OLS MODEL 2 — X + M -> Y
+Do service quality and customer satisfaction explain review rating?
+============================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:          review_rating   R-squared:                       0.059
+Model:                            OLS   Adj. R-squared:                  0.057
+Method:                 Least Squares   F-statistic:                     34.08
+Date:                Sat, 18 Apr 2026   Prob (F-statistic):           4.41e-15
+Time:                        11:46:32   Log-Likelihood:                -1853.2
+No. Observations:                1095   AIC:                             3712.
+Df Residuals:                    1092   BIC:                             3727.
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+===========================================================================================
+                              coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------------
+const                       4.4158      0.052     85.406      0.000       4.314       4.517
+service_quality_X           0.4362      0.073      6.013      0.000       0.294       0.578
+customer_satisfaction_M     0.1389      0.058      2.383      0.017       0.025       0.253
+==============================================================================
+Omnibus:                      222.301   Durbin-Watson:                   1.830
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              369.975
+Skew:                          -1.378   Prob(JB):                     4.58e-81
+Kurtosis:                       3.719   Cond. No.                         2.71
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+------------------------------------------------------------
+H2 RESULT: Effect of Customer Satisfaction (M) on Rating (Y), controlling for X
+  customer_satisfaction_M (Kepuasan Pelanggan) coefficient: 0.1389
+  Significant (p = 0.0174) *
+  H2 Conclusion: SUPPORTED — M significantly predicts Y.
+H3 RESULT: Direct Effect of Service Quality (X) on Rating (Y), controlling for M
+  service_quality_X (Kualitas Layanan) coefficient: 0.4362
+  Significant (p < 0.001) ***
+  H3 Conclusion: SUPPORTED — X has a significant direct effect on Y.
+H4 RESULT: Mediation — Does M mediate the effect of X on Y?
+  Path a (X → M, Model 1): Significant
+  Path b (M → Y, Model 2): Significant
+  H4 Conclusion: SUPPORTED — Both path a and path b are significant.
+  Sentiment (M) mediates the effect of Service Quality (X) on Review Rating (Y).
+  Model R²: 0.0587 | F-stat p: 0.0000
+------------------------------------------------------------

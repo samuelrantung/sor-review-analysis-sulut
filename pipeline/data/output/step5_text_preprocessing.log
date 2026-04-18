@@ -1,0 +1,20 @@
+2026-04-18 10:06:43 - INFO - Loading dataset from: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_normalized.csv
+2026-04-18 10:06:43 - INFO - Loaded 1098 rows.
+2026-04-18 10:06:43 - INFO - Stopword set built: 750 words (negation words excluded).
+2026-04-18 10:06:43 - INFO - Applying stopword removal...
+2026-04-18 10:06:43 - INFO - Dropped 3 rows that became empty after stopword removal.
+2026-04-18 10:06:43 - INFO - Stopword removal complete.
+2026-04-18 10:06:43 - INFO - Starting stemming process (this may take a while)...
+2026-04-18 10:06:43 - INFO - Stemming progress: 100/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 200/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 300/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 400/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 500/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 600/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 700/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 800/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 900/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 1000/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming progress: 1095/1095 rows processed.
+2026-04-18 10:06:43 - INFO - Stemming complete.
+2026-04-18 10:06:43 - INFO - Output saved to: /Users/sam/Documents/Pascasarjana/Python/journal-2/pipeline/data/output/reviews_preprocessed.csv

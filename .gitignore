@@ -1,0 +1,12 @@
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+data
+
+
+# Tapi tetap sertakan folder input (lexicon & keywords)
+!pipeline/data/input/
+EOF
