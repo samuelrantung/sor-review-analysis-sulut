@@ -21,7 +21,7 @@ SERVICE_KEYWORDS_FILE = os.path.join(BASE_DIR, 'data', 'input',  'service_keywor
 
 # Negation words that flip the sentiment of the word that follows them.
 # These are preserved from stopword removal in step5.
-NEGATION_WORDS = {'tidak', 'bukan', 'kurang', 'jangan', 'belum', 'tak', 'tiada', 'tanpa'}
+NEGATION_WORDS = {'tidak', 'bukan', 'kurang', 'jangan', 'belum', 'tak', 'tiada', 'tanpa', 'enggan'}
 
 
 # ==========================================

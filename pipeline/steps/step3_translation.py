@@ -3,9 +3,12 @@ import os
 import re
 import sys
 import time
+from collections import Counter
 
+import nltk
 import pandas as pd
 from deep_translator import GoogleTranslator
+from nltk.corpus import stopwords
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from report import log_step
@@ -16,12 +19,119 @@ from report import log_step
 # ==========================================
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-INPUT_FILE  = os.path.join(BASE_DIR, 'data', 'output', 'reviews_cleaned.csv')
-OUTPUT_FILE = os.path.join(BASE_DIR, 'data', 'output', 'reviews_translated.csv')
+INPUT_FILE       = os.path.join(BASE_DIR, 'data', 'output', 'reviews_cleaned.csv')
+OUTPUT_FILE      = os.path.join(BASE_DIR, 'data', 'output', 'reviews_translated.csv')
+TOP_WORDS_FILE   = os.path.join(BASE_DIR, 'data', 'input',  'top_words_raw.csv')
+SLANG_DICT_FILE  = os.path.join(BASE_DIR, 'data', 'input',  'manado_slang_dict.json')
+
+TOP_N_RAW = 300  # Number of top words to extract for dialect analysis
 
 
 # ==========================================
-# 2. TRANSLATION
+# 2. TOP WORDS EXTRACTION (for dialect analysis)
+# ==========================================
+_GEMINI_SLANG_PROMPT = """
+==============================================================
+  COPY-PASTE PROMPT FOR GEMINI AI — MANADO SLANG DICTIONARY
+==============================================================
+
+Peran: Kamu adalah pakar linguistik dialek Manado (Sulawesi Utara) dan asisten penelitian NLP.
+
+Konteks Data:
+1. Saya sedang membangun pipeline NLP untuk menganalisis ulasan restoran di Google Maps dari wilayah Sulawesi Utara (Manado, Tomohon, Bitung).
+2. Ulasan sudah melalui proses Google Translate (auto-detect → Bahasa Indonesia), namun kata-kata dialek Manado yang tidak dikenali oleh Google Translate kemungkinan masih tersisa dalam bentuk aslinya.
+3. Saya akan mengunggah file bernama top_words_raw.csv yang berisi daftar {top_n} kata dengan frekuensi kemunculan tertinggi dari teks hasil terjemahan.
+
+TUGASMU:
+1. Identifikasi kata-kata dalam file tersebut yang merupakan dialek Manado, slang lokal Sulawesi Utara, atau singkatan informal yang TIDAK berhasil diterjemahkan oleh Google Translate.
+2. Untuk setiap kata yang teridentifikasi, berikan padanan kata standar Bahasa Indonesia yang paling tepat.
+3. Kembangkan kamus dengan menambahkan variasi penulisan umum dari kata yang sama (typo, singkatan, pengulangan huruf).
+
+KRITERIA SELEKSI:
+1. HANYA masukkan kata yang benar-benar bukan Bahasa Indonesia standar (dialek, slang, singkatan tidak baku).
+2. JANGAN masukkan kata Bahasa Indonesia baku meskipun frekuensinya tinggi.
+3. JANGAN masukkan nama tempat, nama orang, atau nama merek.
+4. BOLEH menambahkan variasi penulisan yang tidak ada di file jika kamu yakin kata tersebut umum digunakan di konteks ulasan restoran Manado.
+
+FORMAT OUTPUT (JSON siap pakai, tanpa komentar, tanpa penjelasan):
+{{
+  "slang_atau_singkatan": "kata_standar_bahasa_indonesia",
+  "contoh_nda": "tidak",
+  "contoh_torang": "kami"
+}}
+
+Jika kamu sudah mengerti instruksi ini, jawab dengan "Saya mengerti. Silakan unggah file top_words_raw.csv Anda."
+
+==============================================================
+"""
+
+
+def extract_top_words_raw(translated_file, output_file, top_n=TOP_N_RAW):
+    """
+    Extracts the most frequent words from the translated review corpus (before
+    dialect normalization and stemming). The output is used to identify
+    Manado dialect words that survived Google Translate, which are then
+    fed to Gemini AI to generate manado_slang_dict.json.
+
+    Stopwords are filtered but negation words are preserved.
+    Output format: CSV with columns [word, frequency] — same as top_words.csv.
+    """
+    logging.info(f"Extracting top {top_n} raw words from: {translated_file}")
+    df = pd.read_csv(translated_file)
+    df['review_text'] = df['review_text'].fillna('')
+
+    nltk.download('stopwords', quiet=True)
+    indonesian_stopwords = set(stopwords.words('indonesian'))
+    negation_words = {'tidak', 'bukan', 'kurang', 'jangan', 'belum', 'tak', 'tiada', 'tanpa', 'enggan'}
+    stopword_set = indonesian_stopwords - negation_words
+
+    word_counter = Counter()
+    for text in df['review_text']:
+        if not isinstance(text, str) or not text.strip():
+            continue
+        words = text.split()
+        word_counter.update(w for w in words if w not in stopword_set)
+
+    top_words = word_counter.most_common(top_n)
+    df_out = pd.DataFrame(top_words, columns=['word', 'frequency'])
+
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    df_out.to_csv(output_file, index=False)
+    logging.info(f"Top {top_n} raw words saved to: {output_file}")
+    return top_n
+
+
+def check_slang_dict(slang_dict_file, top_words_file, top_n):
+    """
+    Checks whether manado_slang_dict.json exists in pipeline/data/input/.
+    If not, logs a copy-paste ready Gemini AI prompt and exits the pipeline.
+    """
+    if os.path.exists(slang_dict_file):
+        return
+
+    logging.warning("=" * 62)
+    logging.warning("  MANADO SLANG DICTIONARY NOT FOUND")
+    logging.warning("=" * 62)
+    logging.warning(f"  Expected: {slang_dict_file}")
+    logging.warning("")
+    logging.warning("  Step 3 has extracted the top words from the translated corpus.")
+    logging.warning(f"  Top words file: {top_words_file}")
+    logging.warning("")
+    logging.warning("  To generate the slang dictionary:")
+    logging.warning("    1. Open the file top_words_raw.csv from pipeline/data/input/")
+    logging.warning("    2. Feed it to Gemini AI using the prompt below")
+    logging.warning("    3. Save Gemini's JSON output as: manado_slang_dict.json")
+    logging.warning("    4. Place the file in: pipeline/data/input/")
+    logging.warning("    5. Re-run the pipeline")
+    logging.warning("")
+    for line in _GEMINI_SLANG_PROMPT.format(top_n=top_n).strip().splitlines():
+        logging.warning(f"  {line}")
+    logging.warning("=" * 62)
+    raise SystemExit(1)
+
+
+# ==========================================
+# 3. TRANSLATION
 # ==========================================
 def run_translation(input_file, output_file):
     """
@@ -110,7 +220,14 @@ def run_translation(input_file, output_file):
 
     df.to_csv(output_file, index=False)
     logging.info(f"Translation complete. {len(df)} rows saved to: {output_file}")
-    log_step('Step 3 - Translation', f"{len(df):,} rows translated to Bahasa Indonesia")
+
+    # ---- Extract top words for Manado dialect analysis ----
+    top_n = extract_top_words_raw(output_file, TOP_WORDS_FILE, TOP_N_RAW)
+
+    # ---- Gate: stop pipeline if manado_slang_dict.json not yet generated ----
+    check_slang_dict(SLANG_DICT_FILE, TOP_WORDS_FILE, top_n)
+
+    log_step('Step 3 - Translation', f"{len(df):,} rows translated to Bahasa Indonesia | top_words_raw.csv exported ({TOP_N_RAW} words)")
 
 
 # ==========================================

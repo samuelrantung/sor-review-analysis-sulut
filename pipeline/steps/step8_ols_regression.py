@@ -4,6 +4,7 @@ import sys
 
 import pandas as pd
 import statsmodels.api as sm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from report import log_step
@@ -129,6 +130,35 @@ def run_ols_regression(input_file, output_file, output_csv):
         X_COL: X_LABEL, M_COL: M_LABEL, Y_COL: Y_LABEL
     })
     record(corr_df.corr())
+    record("")
+
+    # ---- Stage 1.5: VIF — Multicollinearity Check (Model 2 predictors) ----
+    record("=" * 60)
+    record("STAGE 1.5: VARIANCE INFLATION FACTOR (VIF) — X and M")
+    record("=" * 60)
+    record("Checks multicollinearity between predictors in Model 2 (X + M → Y).")
+    record("Rule of thumb: VIF < 5 = acceptable, VIF > 10 = problematic.")
+    try:
+        vif_data = df[[X_COL, M_COL]].copy()
+        vif_data['const'] = 1.0
+        vif_results = pd.DataFrame({
+            'Predictor': [X_COL, M_COL],
+            'VIF': [
+                round(variance_inflation_factor(vif_data.values, 0), 4),
+                round(variance_inflation_factor(vif_data.values, 1), 4),
+            ]
+        })
+        record(vif_results.to_string(index=False))
+        for _, row in vif_results.iterrows():
+            if row['VIF'] > 10:
+                record(f"  [WARNING] {row['Predictor']} VIF = {row['VIF']} — HIGH multicollinearity.")
+            elif row['VIF'] > 5:
+                record(f"  [CAUTION] {row['Predictor']} VIF = {row['VIF']} — moderate multicollinearity.")
+            else:
+                record(f"  [OK] {row['Predictor']} VIF = {row['VIF']} — acceptable.")
+    except Exception as e:
+        logging.error(f"VIF calculation failed: {e}")
+        record(f"[ERROR] VIF could not be calculated: {e}")
     record("")
 
     coeff_rows = []
